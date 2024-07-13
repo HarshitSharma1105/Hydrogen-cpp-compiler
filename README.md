@@ -10,13 +10,9 @@ This compiler is written in C++ but hopefully it will get to a point where it ca
 Requires `nasm` and `ld` on a Linux operating system.
 
 ```bash
-git clone https://github.com/HarshitSharma1105/Hydrogen-compiler-in-cpp.git
-cd hydrogen-cpp
-mkdir build
-cmake -S . -B build
-cmake --build build
+git clone https://github.com/HarshitSharma1105/Hydrogen-cpp-compiler.git
+
 ```
 
-Executable will be `hydro` in the `build/` directory.
 
 
