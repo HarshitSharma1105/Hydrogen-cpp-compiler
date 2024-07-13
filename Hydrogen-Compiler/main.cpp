@@ -4,24 +4,19 @@
 #include <sstream>
 #include <vector>
 
-#include "generation.hpp"
+#include "generation.h"
 
-int main(int argc, char* argv[])
+int main()
 {
-    if (argc != 2) {
-        std::cerr << "Incorrect usage. Correct usage is..." << std::endl;
-        std::cerr << "hydro <input.hy>" << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    std::string contents;
-    {
+    std::string contents,path;
+    std::cin >> path;
+     {
         std::stringstream contents_stream;
-        std::fstream input(argv[1], std::ios::in);
+        std::fstream input(path, std::ios::in);
         contents_stream << input.rdbuf();
         contents = contents_stream.str();
     }
-
+    
     Tokenizer tokenizer(std::move(contents));
     std::vector<Token> tokens = tokenizer.tokenize();
 
@@ -35,12 +30,10 @@ int main(int argc, char* argv[])
 
     {
         Generator generator(prog.value());
-        std::fstream file("out.asm", std::ios::out);
-        file << generator.gen_prog();
+        std::cout << generator.gen_prog();
     }
 
-    system("nasm -felf64 out.asm");
-    system("ld -o out out.o");
+   
 
     return EXIT_SUCCESS;
 }
