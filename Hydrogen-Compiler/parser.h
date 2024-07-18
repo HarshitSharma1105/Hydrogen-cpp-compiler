@@ -88,9 +88,14 @@ struct NodeStmtIf {
     NodeScope* scope{};
     std::optional<NodeIfPred*> pred;
 };
+/*
+struct NodeStmtAssign {
+    Token ident;
+    NodeExpr* expr{};
+};*/
 
-// TODO: use using instead of struct
 struct NodeStmt {
+    //std::variant<NodeStmtExit*, NodeStmtLet*, NodeScope*, NodeStmtIf*, NodeStmtAssign*> var;
     std::variant<NodeStmtExit*, NodeStmtLet*, NodeScope*, NodeStmtIf*> var;
 };
 
@@ -106,7 +111,7 @@ public:
     {
     }
 
-    std::optional<NodeTerm*> parse_term()
+    std::optional<NodeTerm*> parse_term() // NOLINT(*-no-recursion)
     {
         if (auto int_lit = try_consume(TokenType::int_lit)) {
             auto term_int_lit = m_allocator.emplace<NodeTermIntLit>(int_lit.value());
@@ -132,7 +137,7 @@ public:
         return {};
     }
 
-    std::optional<NodeExpr*> parse_expr(const int min_prec = 0)
+    std::optional<NodeExpr*> parse_expr(const int min_prec = 0) // NOLINT(*-no-recursion)
     {
         std::optional<NodeTerm*> term_lhs = parse_term();
         if (!term_lhs.has_value()) {
@@ -189,7 +194,7 @@ public:
         return expr_lhs;
     }
 
-    std::optional<NodeScope*> parse_scope()
+    std::optional<NodeScope*> parse_scope() // NOLINT(*-no-recursion)
     {
         if (!try_consume(TokenType::open_curly).has_value()) {
             return {};
@@ -202,7 +207,7 @@ public:
         return scope;
     }
 
-    std::optional<NodeIfPred*> parse_if_pred()
+    std::optional<NodeIfPred*> parse_if_pred() // NOLINT(*-no-recursion)
     {
         if (try_consume(TokenType::elif)) {
             try_consume(TokenType::open_paren, "Expected `(`");
@@ -241,9 +246,9 @@ public:
         return {};
     }
 
-    std::optional<NodeStmt*> parse_stmt()
+    std::optional<NodeStmt*> parse_stmt() // NOLINT(*-no-recursion)
     {
-        if (peek().has_value() && peek().value().type == TokenType::exit && peek(1).has_value()
+        if (peek().value().type == TokenType::exit && peek(1).has_value()
             && peek(1).value().type == TokenType::open_paren) {
             consume();
             consume();
@@ -261,8 +266,7 @@ public:
             stmt->var = stmt_exit;
             return stmt;
         }
-        if (
-            peek().has_value() && peek().value().type == TokenType::let && peek(1).has_value()
+        if (peek().has_value() && peek().value().type == TokenType::let && peek(1).has_value()
             && peek(1).value().type == TokenType::ident && peek(2).has_value()
             && peek(2).value().type == TokenType::eq) {
             consume();
@@ -281,6 +285,24 @@ public:
             stmt->var = stmt_let;
             return stmt;
         }
+        /*
+        if (peek().has_value() && peek().value().type == TokenType::ident && peek(1).has_value()
+            && peek(1).value().type == TokenType::eq) {
+            const auto assign = m_allocator.alloc<NodeStmtAssign>();
+            assign->ident = consume();
+            consume();
+            if (const auto expr = parse_expr()) {
+                assign->expr = expr.value();
+            }
+            else {
+                std::cerr << "Expected expression" << std::endl;
+                exit(EXIT_FAILURE);
+            }
+            try_consume(TokenType::semi, "Expected `;`");
+            auto stmt = m_allocator.emplace<NodeStmt>(assign);
+            return stmt;
+        }
+        */
         if (peek().has_value() && peek().value().type == TokenType::open_curly) {
             if (auto scope = parse_scope()) {
                 auto stmt = m_allocator.emplace<NodeStmt>(scope.value());

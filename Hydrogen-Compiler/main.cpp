@@ -8,14 +8,13 @@
 
 int main()
 {
-    std::string contents,path;
-    std::cin >> path;
+    std::string contents,path="../test.hy";
      {
         std::stringstream contents_stream;
         std::fstream input(path, std::ios::in);
         contents_stream << input.rdbuf();
         contents = contents_stream.str();
-    }
+     }
     
     Tokenizer tokenizer(std::move(contents));
     std::vector<Token> tokens = tokenizer.tokenize();
