@@ -15,21 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="tokenization.h">
+    <ClInclude Include="src\tokenization.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="arena.h">
+    <ClInclude Include="src\arena.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="generation.h">
+    <ClInclude Include="src\generation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="parser.h">
+    <ClInclude Include="src\parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
