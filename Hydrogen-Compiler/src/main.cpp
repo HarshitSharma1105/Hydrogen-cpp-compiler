@@ -6,9 +6,20 @@
 
 #include "generation.h"
 
-int main()
+int main(int argc, char *argv[])
 {
-    std::string contents,path="../test.hy";
+    if (argc != 2) {
+        printf("Usage: %s <filename>\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
+    
+    std::string contents,path=argv[1];
+
+    if (!path.ends_with(".hy")) {
+        std::cout << "Error: File must have a .hy extension\n";
+        exit(EXIT_FAILURE);
+    }
+
      {
         std::stringstream contents_stream;
         std::fstream input(path, std::ios::in);
